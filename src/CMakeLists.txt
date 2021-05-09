@@ -1,4 +1,10 @@
-set (SOURCE_FILES skye/QueryEngine.cpp skye/GitHubConnector.cpp)
+set (SOURCE_FILES 
+    # Internals
+    skye/QueryEngine.cpp
+    skye/GitHubConnector.cpp
+    # Exposing
+    skye/DynamicExposure.cpp
+    )
 
 add_library(skye SHARED ${SOURCE_FILES})
 

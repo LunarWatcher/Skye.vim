@@ -7,8 +7,12 @@ if has("win32")
 endif
 
 var binary = expand("<sfile>:p:h") .. "/../build/lib/libskye." .. ext
-var version = libcall(binary, "getVersion", 0)
+var forceLoad = libcall(binary, "verifyLoaded", 0)
+if (forceLoad != "Dynamic library successfully loaded")
+    echoerr "Failed to load dynamic library"
+    finish
+endif
 
-def skye#Version()
-    echo version
+def skye#Load()
 enddef
+
