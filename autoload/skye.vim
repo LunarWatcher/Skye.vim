@@ -13,6 +13,7 @@ if (forceLoad != "Dynamic library successfully loaded")
     finish
 endif
 
-def skye#Load()
+def skye#TestRemote(remote: string)
+    echoerr libcall(binary, 'parseUrl', remote)
 enddef
 

@@ -13,4 +13,5 @@ target_include_directories(skye PUBLIC ${CONAN_INCLUDE_DIRS})
 # Add this source directory
 target_include_directories(skye PUBLIC ./)
 
+# Link conan libraries
 target_link_libraries(skye ${CONAN_LIBS})
