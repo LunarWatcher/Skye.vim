@@ -17,3 +17,19 @@ def skye#TestRemote(remote: string)
     echoerr libcall(binary, 'parseUrl', remote)
 enddef
 
+def skye#SetUrl(url: string)
+    var response = libcall(binary, 'setUrl', url)
+    if response != ""
+        echo response
+    endif
+enddef
+
+def skye#DetectUrl(url = "origin")
+    var detectedUrl = libcall(binary, 'detectUrlFromRemote', url)
+    echo "Detected URL: " .. detectedUrl
+enddef
+
+def skye#ListIssues()
+    var issues = libcall(binary, 'getIssues', 0)
+    echo issues 
+enddef

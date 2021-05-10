@@ -13,13 +13,27 @@ extern "C" {
 /**
  * 
  */
-const char* verifyLoaded(int) {
+SKYE_EXPORT const char* verifyLoaded(int) {
     return "Dynamic library successfully loaded";
 }
 
-const char* parseUrl(const char* remote) {
+SKYE_EXPORT const char* detectUrlFromRemote(const char* remote) {
     auto str = skye::QueryEngine::getInstance()->parseUrl(remote);
-    return strdup(str.c_str());
+    if (str != "") {
+        skye::QueryEngine::getInstance()->setUrl(str);
+        return strdup(str.c_str());
+    } else {
+        return std::strcat(strdup("Failed to determine URL from remote: "), remote);
+    }
+}
+
+SKYE_EXPORT const char* setUrl(const char* url) {
+    skye::QueryEngine::getInstance()->setUrl(url);
+    return nullptr;
+}
+
+SKYE_EXPORT const char* getIssues(int forceRefresh) {
+    return skye::QueryEngine::getInstance()->queryIssueList(forceRefresh);
 }
 
 }

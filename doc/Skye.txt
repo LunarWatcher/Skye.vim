@@ -8,9 +8,64 @@ Changelog:
 ================================================================================
 Table of contents~
 
-    1. Table of contents base
+    1. Introduction ................................ |skye-introduction|
+    2. Adapters .................................... |skye-adapters|
+        2.1. GitHub ................................ |skye-github|
 
 ================================================================================
+1. Introduction                                                *skye-introduction*
 
+Skye brings issues into Vim.
+
+Why?~
+
+I was bored and had the brilliant idea to torture myself with HTTP requests and
+JSON parsing in interop with VimScript.
+
+What?~
+
+This plugin lets you display issues and issue lists inside Vim.
+
+                                                                  *skye-providers*
+Supported providers~
+
+Currently, only GitHub is supported. If you'd like to see other providers
+supported, submit a PR.
+
+As a side-note, only public repositories are supported at this time.
+
+================================================================================
+2. Adapters                                                        *skye-adapters*
+
+--------------------------------------------------------------------------------
+2.1. GitHub                                                          *skye-github*
+
+The GitHub adapter parses GitHub SSH and HTTPS URLs into an actionable URL
+that's fed to the GitHub API to query issues and comments.
+
+Rate limiting~
+
+If you want access to private repos, or probably more relevant, more than 60
+requests per hour, you need a personal access token. Because I can't be arsed to
+set up a local webserver for OAuth callback, this means you need to store a
+personal access token.
+
+Generate it at: Developer settings -> Personal access tokens -> Generate new token
+As far as I know, it shouldn't need any scopes, potentially unless you expect it
+to work with private repos.
+
+
+TODO: Figure out if this is the best (read: secure) way to go about it
+
+Then `let g:SkyeGitHubAccessToken = "your token here"` (see: |g:SkyeGitHubAccessToken|)
+Since this is a personal access token, it's VERY important that you do NOT
+accidentally include the declaration of said variable anywhere public. Sharing
+personal access tokens is always a bad idea - use common sense when adding it. I
+recommend sourcing a gitignored file if you store your vimrc in a dotfile git
+repo.
+
+Personal access tokens (should) give you 5000 API requests per hour, assuming
+I've understood stuff correctly. GitHub is not clear on the use of PATs over
+OAuth for this context, nor the side-effects in terms of API requests. 
 
 vim:ft=help:tw=80

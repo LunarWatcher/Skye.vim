@@ -7,4 +7,4 @@ vim9script
 g:SkyeVersion = 1
 
 
-
+command -nargs=1 SkyeSetUrl call skye#SetUrl(<f-args>)

@@ -2,6 +2,7 @@
 #include "GitHubConnector.hpp"
 
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <array>
 #include <sstream>
@@ -14,6 +15,10 @@
 namespace skye {
 
 void QueryEngine::setUrl(const std::string &url) {
+    if (url.find("github.com") != std::string::npos) {
+        // The provider is GitHub
+        this->adapter = std::make_shared<GitHubConnector>();
+    }
     this->url = url;
 }
 
@@ -53,6 +58,17 @@ std::shared_ptr<QueryEngine> QueryEngine::getInstance() {
         INSTANCE = std::make_shared<QueryEngine>();
     }
     return INSTANCE;
+}
+
+const char* QueryEngine::queryIssueList(int fr) {
+    if (this->adapter == nullptr) {
+        setUrl(parseUrl("origin"));
+        if (adapter == nullptr) {
+            // TODO: revisit the setting API
+            return "Adapter not set, and failed to find one for remote 'origin'. Please set it explicitly";
+        }
+    }
+    return strdup(adapter->getIssueList(fr).c_str());
 }
 
 }

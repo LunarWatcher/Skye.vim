@@ -2,6 +2,8 @@
 
 Connects to GitHub (pull requests for other commonly used VCS sites are welcome as long as there's an API) to display issues and comments in Vim.
 
+See the documentation file for an extended intro, as well as the deets.
+
 ## Requirements:
 * C++20 compiler
 * CMake
