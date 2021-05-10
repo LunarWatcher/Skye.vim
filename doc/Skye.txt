@@ -68,4 +68,12 @@ Personal access tokens (should) give you 5000 API requests per hour, assuming
 I've understood stuff correctly. GitHub is not clear on the use of PATs over
 OAuth for this context, nor the side-effects in terms of API requests. 
 
+Config note~
+
+Again, there's lots of ways to avoid accidentally exposing your access token.
+Personally, I use a system that splits out these sensitive bits (as well as
+config that's truly system-specific) into a different file. Again, there's lots
+of ways to implement this, but this is one way: https://github.com/LunarWatcher/dotfiles/blob/0e360896c4322d6ffc41372ad0df94ec1f39e723/.vimrc#L987-L999
+
+
 vim:ft=help:tw=80
