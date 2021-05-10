@@ -8,7 +8,7 @@ See the documentation file for an extended intro, as well as the deets.
 * C++20 compiler
 * CMake
 * Python 3 with Conan (https://conan.io)
-* Modern Vim (8.2.2845+ guaranteed; this plugin uses Vim9, meaning there's limited version support as long as Vim9 is under active development)
+* Modern Vim (8.2.2845+ guaranteed; this plugin uses Vim9, meaning there's limited version support as long as Vim9 is under active development). Neovim is not supported
 * Git in `PATH` or otherwise accessible from [`system()`](https://en.cppreference.com/w/cpp/utility/program/system)
 
 **Note:** As I don't use Windows or Mac (and I can't be arsed to set up tests - testing networking is a pain), I have no idea whether or not this works on Mac or Windows. Support is guaranteed for desktop Linux, however, as long as it's a distro with support for modern compilers, Python 3, and pip.
