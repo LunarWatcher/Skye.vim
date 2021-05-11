@@ -1,5 +1,7 @@
-## 10.05.2021
+## 11.05.2021
+* Finalize token management
 
+## 10.05.2021
 * Add command to set the URL
 * Add command to auto-detect URL
 * Start documentation

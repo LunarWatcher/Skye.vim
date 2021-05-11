@@ -13,6 +13,10 @@ if (forceLoad != "Dynamic library successfully loaded")
     finish
 endif
 
+def skye#Verify()
+    libcall(binary, 'verifyLoaded', 0)
+enddef
+
 # API {{{
 
 def skye#SetUrl(url: string)
@@ -40,5 +44,7 @@ enddef
 
 if exists('g:SkyeGitHubAccessToken')
     skye#SetToken(g:SkyeGitHubAccessToken)
+    # Unlet the token. Not strictly speaking necessary, but makes access
+    # harder for other plugins.
     unlet g:SkyeGitHubAccessToken
 endif

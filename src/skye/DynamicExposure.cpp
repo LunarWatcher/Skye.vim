@@ -5,6 +5,7 @@
 
 #include "skye/QueryEngine.hpp"
 #include "skye/GitHubConnector.hpp"
+#include <iostream>
 
 #include <cstring>
 #include <string>
@@ -15,6 +16,11 @@ extern "C" {
  * 
  */
 SKYE_EXPORT const char* verifyLoaded(int) {
+    static std::string x = "hiya";
+    if (x == "hiya") {
+        x = "bye";
+        std::cout << x << std::endl;
+    }
     return "Dynamic library successfully loaded";
 }
 

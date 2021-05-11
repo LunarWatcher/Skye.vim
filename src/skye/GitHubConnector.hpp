@@ -1,16 +1,12 @@
 #pragma once
 
 #include "SiteAdapter.hpp"
+#include <iostream>
 
 namespace skye {
 
 class GitHubConnector : public SiteAdapter {
 private:
-    static const inline std::string BASE_URL = "https://api.github.com";
-    static const inline std::string ISSUE_URL = "/repos";
-    static const inline std::string ISSUE_LIST = "/issues";
-    static const inline std::string ISSUE_COMMENTS = "/comments";
-        
     static inline std::string token = "";
 
     std::string repoPath;
@@ -25,7 +21,9 @@ public:
     std::string getIssueAndComments(int forceRefresh) override;
     std::string getIssueList(int forceRefresh) override;
 
-    static void setToken(const char* token) { GitHubConnector::token = token; }
+    static void setToken(const char* token) {
+        GitHubConnector::token = token;
+    }
 
 };
 

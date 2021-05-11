@@ -12,23 +12,25 @@
 
 #include <memory>
 #include <string>
+#include <iostream>
 
 namespace skye {
 
 class QueryEngine {
 private:
-    static inline std::shared_ptr<QueryEngine> INSTANCE;
+    static inline QueryEngine* INSTANCE;
     std::shared_ptr<SiteAdapter> adapter;
 
     std::string url;
 
 public:
+    ~QueryEngine() { std::cout << "Deconstructed" << std::endl; }
     void setUrl(const std::string& url);
     std::string parseUrl(const std::string& remoteName);
 
     const char* queryIssueList(int fr);
 
-    static std::shared_ptr<QueryEngine> getInstance();
+    static QueryEngine* getInstance();
     const std::string& getUrl() { return url; }
 };
 

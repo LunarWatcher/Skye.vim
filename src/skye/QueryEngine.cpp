@@ -53,9 +53,10 @@ std::string QueryEngine::parseUrl(const std::string &remoteName) {
     return "";
 }
 
-std::shared_ptr<QueryEngine> QueryEngine::getInstance() {
+QueryEngine* QueryEngine::getInstance() {
     if (INSTANCE == nullptr) {
-        INSTANCE = std::make_shared<QueryEngine>();
+        INSTANCE = new QueryEngine();
+        std::cout << "new instance" << std::endl;
     }
     return INSTANCE;
 }
