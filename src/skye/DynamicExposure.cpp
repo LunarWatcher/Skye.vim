@@ -4,6 +4,7 @@
  */
 
 #include "skye/QueryEngine.hpp"
+#include "skye/GitHubConnector.hpp"
 
 #include <cstring>
 #include <string>
@@ -34,6 +35,11 @@ SKYE_EXPORT const char* setUrl(const char* url) {
 
 SKYE_EXPORT const char* getIssues(int forceRefresh) {
     return skye::QueryEngine::getInstance()->queryIssueList(forceRefresh);
+}
+
+SKYE_EXPORT const char* loadGHToken(const char* token) {
+    skye::GitHubConnector::setToken(token);
+    return nullptr;
 }
 
 }

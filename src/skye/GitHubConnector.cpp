@@ -12,7 +12,7 @@ void GitHubConnector::reparseUrl() {
 }
 
 std::string GitHubConnector::getIssueAndComments(int forceRefresh) {
-    return "Blah blah";
+    return "hi";
 }
 
 std::string GitHubConnector::getIssueList(int forceRefresh) {

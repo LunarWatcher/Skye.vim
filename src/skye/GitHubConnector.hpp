@@ -11,6 +11,8 @@ private:
     static const inline std::string ISSUE_LIST = "/issues";
     static const inline std::string ISSUE_COMMENTS = "/comments";
         
+    static inline std::string token = "";
+
     std::string repoPath;
     // cached issue list
     // We're not caching issue comments for the time being
@@ -22,6 +24,8 @@ public:
 
     std::string getIssueAndComments(int forceRefresh) override;
     std::string getIssueList(int forceRefresh) override;
+
+    static void setToken(const char* token) { GitHubConnector::token = token; }
 
 };
 

@@ -13,9 +13,7 @@ if (forceLoad != "Dynamic library successfully loaded")
     finish
 endif
 
-def skye#TestRemote(remote: string)
-    echoerr libcall(binary, 'parseUrl', remote)
-enddef
+# API {{{
 
 def skye#SetUrl(url: string)
     var response = libcall(binary, 'setUrl', url)
@@ -33,3 +31,14 @@ def skye#ListIssues()
     var issues = libcall(binary, 'getIssues', 0)
     echo issues 
 enddef
+
+def skye#SetToken(token: string)
+    libcall(binary, 'loadGHToken', token)
+enddef
+
+# }}}
+
+if exists('g:SkyeGitHubAccessToken')
+    skye#SetToken(g:SkyeGitHubAccessToken)
+    unlet g:SkyeGitHubAccessToken
+endif
