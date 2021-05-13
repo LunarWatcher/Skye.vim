@@ -48,7 +48,24 @@ std::string QueryEngine::parseUrl(const std::string& remoteName) {
 }
 
 const char* QueryEngine::queryIssue(const std::string& rawInput) {
+    auto components = String::split(rawInput, ';');
+    auto url = components[0];
+    auto token = components[1];
+    // This is, contextually, a number in some places.
+    // In other systems, however, it's a string.
+    // Also, it makes no practical difference. It's shoved
+    // into the URL, so converting from a string to a number
+    // would require turning this back into a string.
+    //
+    // The API deals with error handling
+    auto issue = components[2];
 
+    auto adapter = determineAdapterFromUrl(url);
+    if (adapter == nullptr) {
+        return strcat(strdup("Failed to determine adapter from url "), url.c_str());
+    }
+
+    return strdup(adapter->getIssueAndComments(url, token, issue).c_str());
 }
 
 const char* QueryEngine::queryIssueList(const std::string& rawInput) {
@@ -62,7 +79,7 @@ const char* QueryEngine::queryIssueList(const std::string& rawInput) {
         return strcat(strdup("Failed to determine adapter from url "), url.c_str());
     }
 
-    return strdup(adapter->getIssueList(url, token).c_str());
+    return strdup(adapter->getIssueList(url, token, apiQuery).c_str());
 }
 
 std::shared_ptr<SiteAdapter> QueryEngine::determineAdapterFromUrl(const std::string& site) {

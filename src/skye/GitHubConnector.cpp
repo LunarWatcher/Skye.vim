@@ -15,24 +15,33 @@ std::string GitHubConnector::determineRepoPath(const std::string& rawUrl) {
     return url;
 }
 
-std::string GitHubConnector::getIssueAndComments(const std::string& , const std::string ) {
+std::string GitHubConnector::getIssueAndComments(const std::string& , const std::string&, const std::string&) {
     return "hi";
 }
 
-std::string GitHubConnector::getIssueList(const std::string& url, const std::string token) {
+std::string GitHubConnector::getIssueList(const std::string& url, const std::string& token, const std::string& apiParameters) {
 
     // GH shouldn't reject this UA
-    cpr::Header headers{{"User-Agent", "Skye"}};
+    cpr::Header headers{
+        {"User-Agent", "Skye.vim"},
+        {"Accept", "application/vnd.github.v3+json"}
+    };
+
     if (token != "") {
         headers["Authorization"] = "token " + token;
     }
 
     // TODO: support state search
-    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues"});
+    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters});
     // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
-    auto remainingQuota = response.header["x-ratelimit-remaining"];
+    auto remainingQuota = std::stoi(response.header["x-ratelimit-remaining"]);
+    if (remainingQuota == 0) {
+        return "# Sorry, out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
+    }
 
-    std::string ret;
+    // TODO: include total quota? x-ratelimit-total or whatever (check with cURL)
+    std::string ret = "Remaining quota: " + std::to_string(remainingQuota) + "\n\n";
+    // TODO: error handling
 
     nlohmann::json obj = nlohmann::json::parse(response.text);
     for (auto& issue : obj) {

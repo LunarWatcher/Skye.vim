@@ -55,6 +55,9 @@ endif
 # }}}
 # API {{{
 
+def skye#ShowIssue(issue: string)
+    var issueAndComments = libcall(binary, 'getIssue', SeparateStrings(g:IssueUrl, g:SkyeGitHubAccessToken, issue))
+enddef
 
 def skye#ListIssues()
     # TODO: fix token portability. Early determining which token to use might

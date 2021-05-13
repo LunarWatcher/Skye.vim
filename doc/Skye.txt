@@ -11,6 +11,7 @@ Table of contents~
     1. Introduction ................................ |skye-introduction|
     2. Adapters .................................... |skye-adapters|
         2.1. GitHub ................................ |skye-github|
+    3. Options ..................................... |skye-options|
 
 ================================================================================
 1. Introduction                                                *skye-introduction*
@@ -74,6 +75,23 @@ Again, there's lots of ways to avoid accidentally exposing your access token.
 Personally, I use a system that splits out these sensitive bits (as well as
 config that's truly system-specific) into a different file. Again, there's lots
 of ways to implement this, but this is one way: https://github.com/LunarWatcher/dotfiles/blob/0e360896c4322d6ffc41372ad0df94ec1f39e723/.vimrc#L987-L999
+
+================================================================================
+3. Options                                                          *skye-options*
+
+Table of Contents~
+
+Access tokens and locations~
+* |g:SkyeGitHubAccessToken|
+* |g:SkyeUpstreamRemote|
+* |g:SkyeIssueUrl|
+
+--------------------------------------------------------------------------------
+                                                         *g:SkyeGitHubAccessToken*
+
+Type: string
+
+
 
 
 vim:ft=help:tw=80
