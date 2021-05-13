@@ -6,24 +6,11 @@
 namespace skye {
 
 class GitHubConnector : public SiteAdapter {
-private:
-    static inline std::string token = "";
-
-    std::string repoPath;
-    // cached issue list
-    // We're not caching issue comments for the time being
-    std::string issueList;
-
-    void reparseUrl();
-
 public:
+    static std::string determineRepoPath(const std::string& rawUrl);
 
-    std::string getIssueAndComments(int forceRefresh) override;
-    std::string getIssueList(int forceRefresh) override;
-
-    static void setToken(const char* token) {
-        GitHubConnector::token = token;
-    }
+    std::string getIssueAndComments(const std::string& url, const std::string token) override;
+    std::string getIssueList(const std::string& url, const std::string token) override;
 
 };
 

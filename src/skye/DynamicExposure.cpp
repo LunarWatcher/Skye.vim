@@ -3,6 +3,16 @@
  *
  */
 
+// export sematics
+#if defined(_MSC_VER)
+#define SKYE_EXPORT extern "C" __declspec(dllexport)
+#elif defined(__GNUC__)
+#define SKYE_EXPORT extern "C" __attribute__((visibility("default")))
+#else
+#define SKYE_EXPORT extern "C"
+#pragma warning "Couldn't determine export semantics for compiler. Please open an issue, or better, a PR"
+#endif
+
 #include "skye/QueryEngine.hpp"
 #include "skye/GitHubConnector.hpp"
 #include <iostream>
@@ -16,36 +26,20 @@ extern "C" {
  * 
  */
 SKYE_EXPORT const char* verifyLoaded(int) {
-    static std::string x = "hiya";
-    if (x == "hiya") {
-        x = "bye";
-        std::cout << x << std::endl;
-    }
     return "Dynamic library successfully loaded";
 }
 
 SKYE_EXPORT const char* detectUrlFromRemote(const char* remote) {
-    auto str = skye::QueryEngine::getInstance()->parseUrl(remote);
+    auto str = skye::QueryEngine::parseUrl(remote);
     if (str != "") {
-        skye::QueryEngine::getInstance()->setUrl(str);
         return strdup(str.c_str());
     } else {
-        return std::strcat(strdup("Failed to determine URL from remote: "), remote);
+        return "";
     }
 }
 
-SKYE_EXPORT const char* setUrl(const char* url) {
-    skye::QueryEngine::getInstance()->setUrl(url);
-    return nullptr;
-}
-
-SKYE_EXPORT const char* getIssues(int forceRefresh) {
-    return skye::QueryEngine::getInstance()->queryIssueList(forceRefresh);
-}
-
-SKYE_EXPORT const char* loadGHToken(const char* token) {
-    skye::GitHubConnector::setToken(token);
-    return nullptr;
+SKYE_EXPORT const char* getIssues(const char* rawInput) {
+    return skye::QueryEngine::queryIssueList(rawInput);
 }
 
 }

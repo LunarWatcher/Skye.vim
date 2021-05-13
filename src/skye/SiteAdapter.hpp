@@ -8,8 +8,8 @@ protected:
 public:
     virtual ~SiteAdapter() = default;
 
-    virtual std::string getIssueAndComments(int forceRefresh) = 0;
-    virtual std::string getIssueList(int forceRefresh) = 0;
+    virtual std::string getIssueAndComments(const std::string& url, const std::string token) = 0;
+    virtual std::string getIssueList(const std::string& url, const std::string token) = 0;
 };
 
 }

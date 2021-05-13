@@ -1,11 +1,13 @@
 #include "QueryEngine.hpp"
 #include "GitHubConnector.hpp"
+#include "util/Strings.hpp"
 
+#include <array>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <array>
 #include <sstream>
+#include <string.h>
 
 #ifdef _WIN32
 #define popen _popen
@@ -14,15 +16,7 @@
 
 namespace skye {
 
-void QueryEngine::setUrl(const std::string &url) {
-    if (url.find("github.com") != std::string::npos) {
-        // The provider is GitHub
-        this->adapter = std::make_shared<GitHubConnector>();
-    }
-    this->url = url;
-}
-
-std::string QueryEngine::parseUrl(const std::string &remoteName) {
+std::string QueryEngine::parseUrl(const std::string& remoteName) {
     std::array<char, 128> buff;
     std::string res;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("git remote -v", "r"), pclose);
@@ -32,7 +26,7 @@ std::string QueryEngine::parseUrl(const std::string &remoteName) {
     while (fgets(buff.data(), buff.size(), pipe.get()) != nullptr) {
         res += buff.data();
     }
-    // And convert that trash ^ to C++
+    // And convert that trash ^ to something useful
     std::stringstream stream(res);
     std::string line;
     while (std::getline(stream, line)) {
@@ -53,24 +47,25 @@ std::string QueryEngine::parseUrl(const std::string &remoteName) {
     return "";
 }
 
-QueryEngine* QueryEngine::getInstance() {
-    if (INSTANCE == nullptr) {
-        INSTANCE = new QueryEngine();
-        std::cout << "new instance" << std::endl;
+const char* QueryEngine::queryIssueList(const std::string& rawInput) {
+    auto components = String::split(rawInput, ';');
+    auto url = components[0];
+    auto token = components[1];
+
+    auto adapter = determineAdapterFromUrl(url);
+    if (adapter == nullptr) {
+        return strcat(strdup("Failed to determine adapter from url "), url.c_str());
     }
-    return INSTANCE;
+
+    return strdup(adapter->getIssueList(url, token).c_str());
 }
 
-const char* QueryEngine::queryIssueList(int fr) {
-    if (this->adapter == nullptr) {
-        setUrl(parseUrl("origin"));
-        if (adapter == nullptr) {
-            // TODO: revisit the setting API
-            return "Adapter not set, and failed to find one for remote 'origin'. Please set it explicitly";
-        }
+std::shared_ptr<SiteAdapter> QueryEngine::determineAdapterFromUrl(const std::string& site) {
+    if (site.find("github.com") != std::string::npos) {
+        return std::make_shared<GitHubConnector>();
     }
-    return strdup(adapter->getIssueList(fr).c_str());
+    return nullptr;
 }
 
-}
+} // namespace skye
 
