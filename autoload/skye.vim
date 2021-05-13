@@ -59,8 +59,9 @@ endif
 def skye#ListIssues()
     # TODO: fix token portability. Early determining which token to use might
     # be tricky
-    # TODO: caching with forceRefresh
-    var issues = libcall(binary, 'getIssues', SeparateStrings(g:SkyeIssueUrl, g:SkyeGitHubAccessToken, '1'))
+    # TODO: caching (only relevant when buffer management has been done
+    # properly. Probably anyway)
+    var issues = libcall(binary, 'getIssues', SeparateStrings(g:SkyeIssueUrl, g:SkyeGitHubAccessToken, "?state=all"))
 
     # TODO: buffer management
     split

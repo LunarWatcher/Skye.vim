@@ -43,9 +43,14 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
         // TODO: check if body is empty or null if missing
         auto rawBody = issue.at("body").get<std::string>();
         String::purgeBadNewlineCharacter(rawBody);
+
         auto body = String::capString(rawBody, 300);
         auto user = issue.at("user").at("login").get<std::string>();
+
+        auto state = "**" + issue.at("state").get<std::string>() + "**";
+
         ret += "# #" + number + ": " + title + "\n";
+        ret += "State: " + state + "\n";
         ret += "Posted by " + user + " at " + url + "\n";
         ret += "\n" + body + "\n\n";
     }

@@ -38,6 +38,10 @@ SKYE_EXPORT const char* detectUrlFromRemote(const char* remote) {
     }
 }
 
+SKYE_EXPORT const char* getIssue(const char* rawInput) {
+    return skye::QueryEngine::queryIssue(rawInput);
+}
+
 SKYE_EXPORT const char* getIssues(const char* rawInput) {
     return skye::QueryEngine::queryIssueList(rawInput);
 }

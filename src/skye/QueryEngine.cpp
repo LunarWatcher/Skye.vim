@@ -47,10 +47,15 @@ std::string QueryEngine::parseUrl(const std::string& remoteName) {
     return "";
 }
 
+const char* QueryEngine::queryIssue(const std::string& rawInput) {
+
+}
+
 const char* QueryEngine::queryIssueList(const std::string& rawInput) {
     auto components = String::split(rawInput, ';');
     auto url = components[0];
     auto token = components[1];
+    auto apiQuery = components[2];
 
     auto adapter = determineAdapterFromUrl(url);
     if (adapter == nullptr) {
