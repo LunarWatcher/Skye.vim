@@ -58,6 +58,7 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
 
         auto state = "**" + issue.at("state").get<std::string>() + "**";
 
+        // markdown header
         ret += "# #" + number + ": " + title + "\n";
         ret += "State: " + state + "\n";
         ret += "Posted by " + user + " at " + url + "\n";

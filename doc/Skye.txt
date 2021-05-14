@@ -1,9 +1,9 @@
 *skye* *skye.vim* *skye.txt*
 
-License: Your license here
-URL: Your URL here
+License: MIT
+URL: https://github.com/lunarwatcher/skye.vim
 
-Changelog:
+Changelog: https://github.com/LunarWatcher/Skye.vim/blob/master/CHANGELOG.md
 
 ================================================================================
 Table of contents~
@@ -12,6 +12,9 @@ Table of contents~
     2. Adapters .................................... |skye-adapters|
         2.1. GitHub ................................ |skye-github|
     3. Options ..................................... |skye-options|
+    4. Commands and maps ........................... |skye-commands-and-maps|
+        4.1. Commands .............................. |skye-commands|
+        4.2. Maps .................................. |skye-maps|
 
 ================================================================================
 1. Introduction                                                *skye-introduction*
@@ -35,8 +38,13 @@ supported, submit a PR.
 
 As a side-note, only public repositories are supported at this time.
 
+The complete list is under |skye-adapters|
+
 ================================================================================
 2. Adapters                                                        *skye-adapters*
+
+Adapters:
+    |skye-github|
 
 --------------------------------------------------------------------------------
 2.1. GitHub                                                          *skye-github*
@@ -90,8 +98,49 @@ Access tokens and locations~
                                                          *g:SkyeGitHubAccessToken*
 
 Type: string
+Default: ""
 
+Access token sent with requests to the GitHub API
 
+--------------------------------------------------------------------------------
+                                                            *g:SkyeUpstreamRemote*
+
+Type: string
+Default: "origin"
+
+The default remote. Used when parsing the output of `git remote -v`. Note that
+this doesn't care about branches. Remote names are separate from branch names.
+
+--------------------------------------------------------------------------------
+                                                                  *g:SkyeIssueUrl*
+
+Type: string
+Default: parses git remote -v at autoload startup
+
+Defines the issue url. This is used internally to parse the repo name (if GH
+URL). This can also be manually set instead of being auto-detected, which might
+be preferable if your issue system is separate from your remote. Note that this
+variable still requires a matching |skye-adapter| for the URL to be possible to
+retrieve from.
+
+One example use of this variable is if you have a fork, but want to see issues
+for an upstream repo.
+
+================================================================================
+4. Commands and keybinds                                  *skye-commands-and-maps*
+
+--------------------------------------------------------------------------------
+4.1. Commands                                                      *skye-commands*
+
+Command      | Arguments                                     | Description
+------------ | --------------------------------------------- | -----------------
+*SkyeList*     | Optional URL; largely for scripting purposes. | Lists issues
+             | If not given, uses  |g:SkyeIssueUrl|            |  
+
+--------------------------------------------------------------------------------
+4.2. Keybinds                                                      *skye-keybinds*
+
+*<leader>sl*              calls |SkyeList| with 0 arguments
 
 
 vim:ft=help:tw=80

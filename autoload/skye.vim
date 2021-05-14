@@ -59,12 +59,16 @@ def skye#ShowIssue(issue: string)
     var issueAndComments = libcall(binary, 'getIssue', SeparateStrings(g:IssueUrl, g:SkyeGitHubAccessToken, issue))
 enddef
 
-def skye#ListIssues()
+def skye#ListIssues(url = g:SkyeIssueUrl)
+    if type(url) != v:t_string
+        echoerr "URL isn't a string; aborting function"
+        return
+    endif
     # TODO: fix token portability. Early determining which token to use might
     # be tricky
     # TODO: caching (only relevant when buffer management has been done
     # properly. Probably anyway)
-    var issues = libcall(binary, 'getIssues', SeparateStrings(g:SkyeIssueUrl, g:SkyeGitHubAccessToken, "?state=all"))
+    var issues = libcall(binary, 'getIssues', SeparateStrings(url, g:SkyeGitHubAccessToken, "?state=all"))
 
     # TODO: buffer management
     split
@@ -73,9 +77,9 @@ def skye#ListIssues()
     setlocal bufhidden=hide
     file GitHub issues
     setlocal ft=markdown
-    setlocal readonly
 
     silent! setline(1, split(issues, "\n"))
+    setlocal readonly
     
 enddef
 

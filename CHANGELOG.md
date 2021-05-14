@@ -1,3 +1,7 @@
+## 14.05.2021
+* Add optional URL parameter to list function
+* Fix markdown edge-cases causing broken syntax highlighting
+
 ## 11.05.2021
 * Finalize token management
 

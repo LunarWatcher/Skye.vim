@@ -8,7 +8,9 @@ g:SkyeVersion = 1
 
 
 # Commands {{{
-command -nargs=0 SkyeList call skye#ListIssues()
+command -nargs=? SkyeList call skye#ListIssues(<f-args>)
+
+
 # }}}
 # Keybinds {{{
 nnoremap <leader>sl :SkyeList<cr>
