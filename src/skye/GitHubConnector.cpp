@@ -15,8 +15,24 @@ std::string GitHubConnector::determineRepoPath(const std::string& rawUrl) {
     return url;
 }
 
-std::string GitHubConnector::getIssueAndComments(const std::string& , const std::string&, const std::string&) {
-    return "hi";
+std::string GitHubConnector::getIssueAndComments(const std::string& url, const std::string& token, const std::string& issueId) {
+    cpr::Header headers{
+        {"User-Agent", "Skye.vim"},
+        {"Accept", "application/vnd.github.v3+json"}
+    };
+
+    if (token != "") {
+        headers["Authorization"] = "token " + token;
+    }
+
+    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues/" + issueId + "/comments"}, headers);
+    std::cout << response.url << std::endl;
+    // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
+    auto remainingQuota = std::stoi(response.header["x-ratelimit-remaining"]);
+    if (remainingQuota == 0) {
+        return "# Sorry, out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
+    }
+    return response.text;
 }
 
 std::string GitHubConnector::getIssueList(const std::string& url, const std::string& token, const std::string& apiParameters) {
@@ -32,37 +48,42 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
     }
 
     // TODO: support state search
-    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters});
+    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters}, headers);
     // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
-    auto remainingQuota = std::stoi(response.header["x-ratelimit-remaining"]);
-    if (remainingQuota == 0) {
+    auto remainingQuota = response.header["x-ratelimit-remaining"];
+    if (remainingQuota == "0") {
         return "# Sorry, out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
     }
 
-    // TODO: include total quota? x-ratelimit-total or whatever (check with cURL)
-    std::string ret = "Remaining quota: " + std::to_string(remainingQuota) + "\n\n";
-    // TODO: error handling
+
+    std::string ret = "Remaining quota: " + remainingQuota + " (max: " + response.header["x-ratelimit-limit"] + ")\n\n";
 
     nlohmann::json obj = nlohmann::json::parse(response.text);
-    for (auto& issue : obj) {
-        auto url = issue.at("html_url").get<std::string>();
-        auto title = issue.at("title").get<std::string>();
-        auto number = std::to_string(issue.at("number").get<int>());
-        
-        // TODO: check if body is empty or null if missing
-        auto rawBody = issue.at("body").get<std::string>();
-        String::purgeBadNewlineCharacter(rawBody);
+    if (obj.is_array()) {
+        for (auto& issue : obj) {
+            auto url = issue.at("html_url").get<std::string>();
+            auto title = issue.at("title").get<std::string>();
+            auto number = std::to_string(issue.at("number").get<int>());
+            
+            // TODO: check if body is empty or null if missing
+            auto rawBody = issue.at("body").get<std::string>();
+            String::purgeBadNewlineCharacter(rawBody);
 
-        auto body = String::capString(rawBody, 300);
-        auto user = issue.at("user").at("login").get<std::string>();
+            auto body = String::capString(rawBody, 300);
+            auto user = issue.at("user").at("login").get<std::string>();
 
-        auto state = "**" + issue.at("state").get<std::string>() + "**";
+            auto state = "**" + issue.at("state").get<std::string>() + "**";
 
-        // markdown header
-        ret += "# #" + number + ": " + title + "\n";
-        ret += "State: " + state + "\n";
-        ret += "Posted by " + user + " at " + url + "\n";
-        ret += "\n" + body + "\n\n";
+            // markdown header
+            ret += "# #" + number + ": " + title + "\n";
+            ret += "State: " + state + "\n";
+            ret += "Posted by " + user + " at " + url + "\n";
+            ret += "\n" + body + "\n\n";
+        }
+    } else if (obj.is_object()) {
+        return "Something unexpected happened. Message from the API: " + obj["message"].get<std::string>();
+    } else {
+        return "The API returned an unexpected object: " + response.text;
     }
     
     return ret;
