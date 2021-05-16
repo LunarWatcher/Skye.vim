@@ -142,6 +142,7 @@ def skye#ShowIssue(issue: string = "-1")
 
     set modifiable
     setline(1, split(issuesAndComments, "\n"))
+    set nomodifiable
 enddef
 
 # }}}

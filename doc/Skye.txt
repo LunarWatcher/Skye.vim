@@ -136,11 +136,14 @@ Command      | Arguments                                     | Description
 ------------ | --------------------------------------------- | -----------------
 *SkyeList*     | Optional URL; largely for scripting purposes. | Lists issues
              | If not given, uses  |g:SkyeIssueUrl|            |  
+*SkyeShow*     | Shows an issue, or tries to parse the token   | Shows issue details
+             | under the cursor to try to find an issue ref- |
+             | erence. The format is generally #[a-zA-Z0-9]+ |
 
 --------------------------------------------------------------------------------
-4.2. Keybinds                                                      *skye-keybinds*
+4.2. Keybinds                                                          *skye-maps*
 
-*<leader>sl*              calls |SkyeList| with 0 arguments
-
+*<leader>sl*                Calls |SkyeList| with 0 arguments
+*<leader>fi*                Calls |SkyeShow| with 0 arguments
 
 vim:ft=help:tw=80
