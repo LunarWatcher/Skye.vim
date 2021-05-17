@@ -76,7 +76,11 @@ def skye#ManageScratchBuffer(switch: number)
         setlocal buftype=nofile
         setlocal bufhidden=hide
 
-        setlocal ft=markdown
+        if switch == 0
+            setlocal ft=SkyeGithub
+        else
+            setlocal ft=markdown
+        endif
 
         setlocal nomodifiable
         
@@ -145,5 +149,28 @@ def skye#ShowIssue(issue: string = "-1")
     set nomodifiable
 enddef
 
+# }}}
+# Highlights {{{
+def skye#InitSkyeListHighlighting()
+    syn match SkyeIssue '\v^#.*' contains=SkyeIssueID,SkyeState,SkyeLink
+    syn match SkyeIssueID '\v#\d+\s' contained
+    syn match SkyeState '\v\[.\]\ze\t' contained 
+
+    syn match QuotaLine '\v^Remaining quota:.*' contains=QuotaNumbers
+    syn match QuotaNumbers '\v\d+' contained
+
+    syn match SkyeLink '\vat \zshttps?:.*$' contained
+
+
+    hi QuotaLine guifg=purple
+    hi link QuotaNumbers Number
+
+    hi link SkyeIssueID Statement
+    hi link SkyeState   Identifier
+    hi link SkyeLink    Keyword
+
+    set sw=8
+    set ts=8
+enddef
 # }}}
 

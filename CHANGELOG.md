@@ -1,3 +1,8 @@
+## 17.06.2021
+* Syntax highlighting (:D), shorten list page substantially
+* Prettify list page to not look like garbage (tf was I thinking?)
+* Improve rate limit handling
+
 ## 15.05.2021
 * Error handling for API requests
 * Buffer management for issues and lists

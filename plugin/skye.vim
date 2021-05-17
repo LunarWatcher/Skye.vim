@@ -23,3 +23,9 @@ nnoremap <leader>sl :SkyeList<cr>
 
 
 # }}}
+# Autocmds {{{
+augroup SkyeAutocmds
+    au!
+    autocmd FileType SkyeGithub call skye#InitSkyeListHighlighting()
+augroup END
+# }}}

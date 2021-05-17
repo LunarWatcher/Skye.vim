@@ -21,7 +21,8 @@ The current requirement of requiring Git in PATH may or may not make it harder t
 ## TODO before v1.0.0:
 * [x] Issue lists
 * [ ] Show individual issues
-* [ ] Reformat the list to be compact (don't include a summary at all, for clarity)
+* [x] Reformat the list to be compact (don't include a summary at all, for clarity)
+* [ ] More syntax highlighting on the list page
 * [ ] Filtering
 * [ ] Refreshing
 * [ ] Dealing with paging served by the API
