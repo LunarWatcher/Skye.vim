@@ -31,26 +31,6 @@ inline size_t countSubstring(const std::string& in, const std::string& search) {
     return occurences;
 }
 
-inline std::string capString(const std::string& in, size_t maxLen) {
-    if (in.size() < maxLen)
-        return in;
-    std::string result = in.substr(0, maxLen) + " ...";
-    // To avoid format leaking
-    // This doesn't account for other bits of formatting, but what can you do?
-    if (countSubstring(result, "<!--") > countSubstring(result, "-->")) {
-        result += "-->\n";
-    }
-    if (countSubstring(result, "```") % 2 != 0) {
-        result += "\n```\n";
-    }
-
-    return result;
-}
-
-inline void purgeBadNewlineCharacter(std::string& input) {
-    input.erase(std::remove(input.begin(), input.end(), '\r'), input.end());
-}
-
 } // namespace String
 
 } // namespace skye
