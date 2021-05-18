@@ -20,11 +20,11 @@ The current requirement of requiring Git in PATH may or may not make it harder t
 
 ## TODO before v1.0.0:
 * [x] Issue lists
-* [ ] Show individual issues
+* [x] Show individual issues
 * [x] Reformat the list to be compact (don't include a summary at all, for clarity)
 * [ ] More syntax highlighting on the list page
 * [ ] Filtering
-* [ ] Refreshing
+* [ ] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
 * [ ] Dealing with paging served by the API
 * [ ] Performance (Blocking may be a problem)
 

@@ -117,6 +117,7 @@ def skye#ListIssues(url = g:SkyeIssueUrl)
     skye#ManageScratchBuffer(0)
 
     set modifiable
+    normal! ggdG
     silent! setline(1, split(issues, "\n"))
     set nomodifiable
     
@@ -145,6 +146,7 @@ def skye#ShowIssue(issue: string = "-1")
     skye#ManageScratchBuffer(1)
 
     set modifiable
+    normal! ggdG
     setline(1, split(issuesAndComments, "\n"))
     set nomodifiable
 enddef
