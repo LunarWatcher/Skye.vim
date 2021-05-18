@@ -3,6 +3,7 @@
 * setlocal on sw and ts instead of set (forcing other settings isn't the goal)
 * Fix rate limiting error handling
 * Display individual issues
+* Clear the buffer before setting the content to avoid problems when setting the buffer content to something shorter than it was previously (largely a problem with issue switching)
 
 ## 17.05.2021
 * Syntax highlighting (:D), shorten list page substantially
