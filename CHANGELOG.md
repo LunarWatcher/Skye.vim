@@ -2,6 +2,7 @@
 * Outsource headers
 * setlocal on sw and ts instead of set (forcing other settings isn't the goal)
 * Fix rate limiting error handling
+* Display individual issues
 
 ## 17.05.2021
 * Syntax highlighting (:D), shorten list page substantially

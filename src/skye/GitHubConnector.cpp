@@ -1,5 +1,5 @@
-#include "QueryEngine.hpp"
 #include "GitHubConnector.hpp"
+#include "QueryEngine.hpp"
 #include "nlohmann/json.hpp"
 #include "util/Strings.hpp"
 
@@ -14,11 +14,8 @@ std::string GitHubConnector::determineRepoPath(const std::string& rawUrl) {
     return url;
 }
 
-cpr::Header GitHubConnector::getHeaders(const std::string &token) {
-    cpr::Header headers{
-        {"User-Agent", "Skye.vim"},
-        {"Accept", "application/vnd.github.v3+json"}
-    };
+cpr::Header GitHubConnector::getHeaders(const std::string& token) {
+    cpr::Header headers{{"User-Agent", "Skye.vim"}, {"Accept", "application/vnd.github.v3+json"}};
 
     if (token != "") {
         headers["Authorization"] = "token " + token;
@@ -26,52 +23,58 @@ cpr::Header GitHubConnector::getHeaders(const std::string &token) {
     return headers;
 }
 
-std::string GitHubConnector::getIssueAndComments(const std::string& url, const std::string& token, const std::string& issueId) {
+std::string GitHubConnector::getIssueAndComments(
+        const std::string& url, const std::string& token, const std::string& issueId) {
     auto headers = getHeaders(token);
 
     auto repoPath = determineRepoPath(url);
-    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + repoPath + "/issues/" + issueId + "/comments"}, headers);
+    auto response =
+            cpr::Get(cpr::Url{"https://api.github.com/repos" + repoPath + "/issues/" + issueId + "/comments"}, headers);
 
-    auto rawIssueResponse = cpr::Get(cpr::Url{"https://api.github.com/repos" + repoPath + "/issues/" + issueId + "/comments"}, headers);
+    auto rawIssueResponse =
+            cpr::Get(cpr::Url{"https://api.github.com/repos" + repoPath + "/issues/" + issueId + ""}, headers);
 
-    nlohmann::json obj = nlohmann::json::parse(response.text);
+    nlohmann::json issueObj = nlohmann::json::parse(rawIssueResponse.text);
     std::string ret;
 
-    if (obj.is_array()) {
-        for (auto& issue : obj) {
-            auto url = issue.at("html_url").get<std::string>();
-            auto title = issue.at("title").get<std::string>();
-            auto number = std::to_string(issue.at("number").get<int>());
-            
-            // TODO: check if body is empty or null if missing
-            auto rawBody = issue.at("body").get<std::string>();
-            auto user = issue.at("user").at("login").get<std::string>();
-
-            auto state = "**" + issue.at("state").get<std::string>() + "**";
-
-            // markdown header
-            ret += "# #" + number + ": " + title + "\n";
-            ret += "State: " + state + "\n";
-            ret += "Posted by " + user + " at " + url + "\n";
+    if (issueObj.is_object()) {
+        if (issueObj.contains("message")) {
+            return "Something unexpected happened: " + issueObj.at("message").get<std::string>();
         }
-    } else if (obj.is_object()) {
-        auto remainingQuota = std::stoi(response.header["x-ratelimit-remaining"]);
-        if (remainingQuota == 0) {
-            return "Out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
+        nlohmann::json commentObj = nlohmann::json::parse(response.text);
+        ret += "# #" + std::to_string(issueObj.at("number").get<int>()) + ": " //
+               + issueObj.at("title").get<std::string>() + "\n";
+        ret += "OP: " + issueObj.at("user").at("login").get<std::string>() + "\n";
+        ret += "URL: " + issueObj.at("html_url").get<std::string>() + "\n";
+        ret += "State: " + issueObj.at("state").get<std::string>() + "\n\n";
+        {
+            auto issueBody = issueObj.at("body").get<std::string>();
+            String::purgeBadNewlineCharacter(issueBody);
+            ret += issueBody;
         }
-        return "Something unexpected happened. Message from the API: " + obj["message"].get<std::string>();
+
+        for (auto& issue : commentObj) {
+            ret += "\n\n------------------------------------------------\n\n";
+            ret += "Comment by " + issue.at("user").at("login").get<std::string>() + "\n";
+            ret += "URL: " + issue.at("html_url").get<std::string>() + "\n\n";
+
+            auto commentBody = issue.at("body").get<std::string>();
+            String::purgeBadNewlineCharacter(commentBody);
+            ret += commentBody;
+        }
     } else {
         return "The API returned an unexpected object: " + response.text;
     }
     return ret;
 }
 
-std::string GitHubConnector::getIssueList(const std::string& url, const std::string& token, const std::string& apiParameters) {
+std::string GitHubConnector::getIssueList(
+        const std::string& url, const std::string& token, const std::string& apiParameters) {
     auto headers = getHeaders(token);
 
     // TODO: support state search
-    auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters}, headers);
-
+    auto response = cpr::Get(
+            cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters}, headers);
 
     auto remainingQuota = response.header["x-ratelimit-remaining"];
     std::string ret = "Remaining quota: " + remainingQuota + " (max: " + response.header["x-ratelimit-limit"] + ")\n\n";
@@ -89,7 +92,6 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
 
             // markdown header
             ret += "#" + number + "\t[" + state + "]\t" + title + " by " + user + " at " + url + "\n";
-
         }
     } else if (obj.is_object()) {
         // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
@@ -100,9 +102,8 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
     } else {
         return "The API returned an unexpected object: " + response.text;
     }
-    
+
     return ret;
 }
 
-
-}
+} // namespace skye

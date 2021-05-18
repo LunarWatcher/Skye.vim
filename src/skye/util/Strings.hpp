@@ -31,6 +31,10 @@ inline size_t countSubstring(const std::string& in, const std::string& search) {
     return occurences;
 }
 
+inline void purgeBadNewlineCharacter(std::string& input) {
+    input.erase(std::remove(input.begin(), input.end(), '\r'), input.end());
+}
+
 } // namespace String
 
 } // namespace skye
