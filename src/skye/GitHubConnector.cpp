@@ -57,7 +57,7 @@ std::string GitHubConnector::getIssueAndComments(const std::string& url, const s
     } else if (obj.is_object()) {
         auto remainingQuota = std::stoi(response.header["x-ratelimit-remaining"]);
         if (remainingQuota == 0) {
-            return "Sorry, out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
+            return "Out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
         }
         return "Something unexpected happened. Message from the API: " + obj["message"].get<std::string>();
     } else {
@@ -71,13 +71,9 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
 
     // TODO: support state search
     auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters}, headers);
-    // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
+
+
     auto remainingQuota = response.header["x-ratelimit-remaining"];
-    if (remainingQuota == "0") {
-        return "# Sorry, out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
-    }
-
-
     std::string ret = "Remaining quota: " + remainingQuota + " (max: " + response.header["x-ratelimit-limit"] + ")\n\n";
 
     nlohmann::json obj = nlohmann::json::parse(response.text);
@@ -96,6 +92,10 @@ std::string GitHubConnector::getIssueList(const std::string& url, const std::str
 
         }
     } else if (obj.is_object()) {
+        // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
+        if (remainingQuota == "0") {
+            return "Out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
+        }
         return "Something unexpected happened. Message from the API: " + obj["message"].get<std::string>();
     } else {
         return "The API returned an unexpected object: " + response.text;

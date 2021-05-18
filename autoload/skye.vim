@@ -169,8 +169,9 @@ def skye#InitSkyeListHighlighting()
     hi link SkyeState   Identifier
     hi link SkyeLink    Keyword
 
-    set sw=8
-    set ts=8
+    setlocal sw=8
+    setlocal ts=8
+    setlocal nolist
 enddef
 # }}}
 
