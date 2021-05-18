@@ -1,4 +1,7 @@
-## 17.06.2021
+## 18.05.2021
+* Outsource headers
+
+## 17.05.2021
 * Syntax highlighting (:D), shorten list page substantially
 * Prettify list page to not look like garbage (tf was I thinking?)
 * Improve rate limit handling

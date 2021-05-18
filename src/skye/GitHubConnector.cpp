@@ -1,6 +1,5 @@
 #include "QueryEngine.hpp"
 #include "GitHubConnector.hpp"
-#include "cpr/cpr.h"
 #include "nlohmann/json.hpp"
 #include "util/Strings.hpp"
 
@@ -15,7 +14,7 @@ std::string GitHubConnector::determineRepoPath(const std::string& rawUrl) {
     return url;
 }
 
-std::string GitHubConnector::getIssueAndComments(const std::string& url, const std::string& token, const std::string& issueId) {
+cpr::Header GitHubConnector::getHeaders(const std::string &token) {
     cpr::Header headers{
         {"User-Agent", "Skye.vim"},
         {"Accept", "application/vnd.github.v3+json"}
@@ -24,6 +23,11 @@ std::string GitHubConnector::getIssueAndComments(const std::string& url, const s
     if (token != "") {
         headers["Authorization"] = "token " + token;
     }
+    return headers;
+}
+
+std::string GitHubConnector::getIssueAndComments(const std::string& url, const std::string& token, const std::string& issueId) {
+    auto headers = getHeaders(token);
 
     auto repoPath = determineRepoPath(url);
     auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + repoPath + "/issues/" + issueId + "/comments"}, headers);
@@ -63,16 +67,7 @@ std::string GitHubConnector::getIssueAndComments(const std::string& url, const s
 }
 
 std::string GitHubConnector::getIssueList(const std::string& url, const std::string& token, const std::string& apiParameters) {
-
-    // GH shouldn't reject this UA
-    cpr::Header headers{
-        {"User-Agent", "Skye.vim"},
-        {"Accept", "application/vnd.github.v3+json"}
-    };
-
-    if (token != "") {
-        headers["Authorization"] = "token " + token;
-    }
+    auto headers = getHeaders(token);
 
     // TODO: support state search
     auto response = cpr::Get(cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters}, headers);
