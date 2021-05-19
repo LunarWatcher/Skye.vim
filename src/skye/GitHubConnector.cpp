@@ -72,7 +72,6 @@ std::string GitHubConnector::getIssueList(
         const std::string& url, const std::string& token, const std::string& apiParameters) {
     auto headers = getHeaders(token);
 
-    // TODO: support state search
     auto response = cpr::Get(
             cpr::Url{"https://api.github.com/repos" + determineRepoPath(url) + "/issues" + apiParameters}, headers);
 

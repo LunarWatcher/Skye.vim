@@ -8,7 +8,7 @@ g:SkyeVersion = 1
 
 
 # Commands {{{
-command -nargs=? SkyeList call skye#ListIssues(<f-args>)
+command -nargs=? SkyeList call skye#ListIssues(<f-args>, "?state=open")
 command -nargs=? SkyeShow call skye#ShowIssue(<f-args>)
 
 # }}}
@@ -20,12 +20,10 @@ nnoremap <Plug>(ShowIssue) :SkyeShow<CR>
 
 nnoremap <leader>sl :SkyeList<cr>
 
-
-
 # }}}
 # Autocmds {{{
 augroup SkyeAutocmds
     au!
-    autocmd FileType SkyeGithub call skye#InitSkyeListHighlighting()
+    autocmd FileType SkyeGithub call skye#InitListBuffer()
 augroup END
 # }}}

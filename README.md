@@ -22,11 +22,10 @@ The current requirement of requiring Git in PATH may or may not make it harder t
 * [x] Issue lists
 * [x] Show individual issues
 * [x] Reformat the list to be compact (don't include a summary at all, for clarity)
-* [ ] More syntax highlighting on the list page
+* [x] More syntax highlighting on the list page
 * [ ] Filtering
-* [ ] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
+* [x] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
 * [ ] Dealing with paging served by the API
-* [ ] Performance (Blocking may be a problem)
 
 ## Future ideas:
 * Issue editing and posting (full integration instead of read-only - we have the tokens for it already)

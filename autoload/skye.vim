@@ -1,6 +1,8 @@
 vim9script
 
-# TODO: figure out which extension is used on Mac
+# TODO: figure out which extension is used on Mac (read: which CMake generates
+# on Mac)
+# (Windows disallows extensions)
 var ext = ""
 if has("linux")
     ext = ".so"
@@ -51,6 +53,12 @@ if (!exists("g:SkyeIssueUrl"))
 endif
 g:SkyeActiveUrl = g:SkyeIssueUrl
 
+# State management variables
+# Could make SkyeLastIssue a list for a full navigation-style experience, but
+# meh
+g:SkyeActiveIssue = "-1"
+g:SkyeLastIssue = "-1"
+
 # Buffer for the list
 var listBuffID = -1
 # Buffer for the issue
@@ -80,6 +88,7 @@ def skye#ManageScratchBuffer(switch: number)
             setlocal ft=SkyeGithub
         else
             setlocal ft=markdown
+            skye#InitIssueBuffer()
         endif
 
         setlocal nomodifiable
@@ -91,7 +100,8 @@ def skye#ManageScratchBuffer(switch: number)
             issueBuffID = bufnr()
         endif
 
-        nmap <buffer> <leader>fi <Plug>(ShowIssue)
+        nmap <buffer> <C-g> <Plug>(ShowIssue)
+        nmap <buffer> <CR> <Plug>(ShowIssue)
     else
         # If the buffer exists, and is in the current window (and in the
         # current tab, because Vim), we go to the buffer
@@ -102,21 +112,25 @@ def skye#ManageScratchBuffer(switch: number)
 
 enddef
 
-def skye#ListIssues(url = g:SkyeIssueUrl)
+def skye#ListIssues(url = g:SkyeIssueUrl, apiQuery: string = "?state=open")
     if type(url) != v:t_string
         echoerr "URL isn't a string; aborting function"
         return
     endif
+
+    # Cache variables (and utilities for refreshing)
     g:SkyeActiveUrl = url
+    g:SkyeActiveFilter = apiQuery
+
     # TODO: fix token portability. Early determining which token to use might
     # be tricky
-    # TODO: caching (only relevant when buffer management has been done
-    # properly. Probably anyway)
-    var issues = libcall(binary, 'getIssues', SeparateStrings(url, g:SkyeGitHubAccessToken, "?state=all"))
+    var issues = libcall(binary, 'getIssues', SeparateStrings(url, g:SkyeGitHubAccessToken, apiQuery))
 
+    # Load the scratch buffer
     skye#ManageScratchBuffer(0)
 
     set modifiable
+    # Clear the buffer
     normal! ggdG
     silent! setline(1, split(issues, "\n"))
     set nomodifiable
@@ -125,24 +139,34 @@ enddef
 
 def skye#ShowIssue(issue: string = "-1")
     var mIssue = issue
+    # This shouldn't be a false positive, ever. I don't think any issue
+    # systems include IDs like -1
     if issue == "-1"
-        # This shouldn't be a false positive, ever.
-        var currLine = getline('.')
-        if currLine =~ '\v^# #'
-            mIssue = currLine[3 : stridx(currLine, ' ', 3) - 2]
+        # Check if there's a token under the cursor first (... in the current
+        # space-separated word)
+        var currToken = expand('<cWORD>')
+        if currToken =~ '\v^#[a-zA-Z\-0-9]+$'
+            mIssue = currToken[1 :]
         else
-            var currToken = expand('<cWORD>')
-            if currToken =~ '\v^#[a-zA-Z\-0-9]+$'
-                mIssue = currToken[1 :]
+            var currLine = getline('.')
+            # This doesn't need to be a strict search. The buffer only contains
+            # auto-generated content, meaning the line either starts with #1234
+            # (or #AB-1234 or whatever), or it's blank or contains the API usage
+            # stat thingy
+            if currLine =~ '\v^#'
+                mIssue = currLine[1 : stridx(currLine, "\t") - 1]
             else
-                # Final fallback; no token found
                 echom "Failed to find an issue reference in the current line or token"
                 return
             endif
         endif
     endif
+    g:SkyeLastIssue = g:SkyeActiveIssue
+    g:SkyeActiveIssue = mIssue
+
     var issuesAndComments = libcall(binary, 'getIssue', SeparateStrings(g:SkyeActiveUrl, g:SkyeGitHubAccessToken, mIssue))
 
+    # Load the scratch buffer
     skye#ManageScratchBuffer(1)
 
     set modifiable
@@ -153,27 +177,57 @@ enddef
 
 # }}}
 # Highlights {{{
-def skye#InitSkyeListHighlighting()
-    syn match SkyeIssue '\v^#.*' contains=SkyeIssueID,SkyeState,SkyeLink
+def skye#InitListBuffer()
+    if !exists("g:SkyeActiveUrl")
+        echom "g:SkyeActiveUrl not set yet. This shouldn't happen (unless you've been setting stuff manually :eyes:)"
+        return
+    endif
+
+    # Primary line highlights
+    syn match SkyeIssue '\v^#.*' contains=SkyeIssueID,SkyeState,SkyeAuthor
     syn match SkyeIssueID '\v#\d+\s' contained
     syn match SkyeState '\v\[.\]\ze\t' contained 
+    syn match SkyeAuthor '\vby \zs.{-} at https?:.*$' contained contains=SkyeLink
+    syn match SkyeLink '\vat https?:.*$' contained contains=normal
+    # Reset the at - doesn't need to be highlighted, so match it to Normal
+    syn match Normal 'at ' contained
 
+    # Highlight the quota
     syn match QuotaLine '\v^Remaining quota:.*' contains=QuotaNumbers
     syn match QuotaNumbers '\v\d+' contained
 
-    syn match SkyeLink '\vat \zshttps?:.*$' contained
-
-
+    # Link color definitions
     hi QuotaLine guifg=purple
     hi link QuotaNumbers Number
 
     hi link SkyeIssueID Statement
     hi link SkyeState   Identifier
     hi link SkyeLink    Keyword
+    hi link SkyeAuthor  Type
 
+    # This should make the buffer look less like absolute garbage - there
+    # shouldn't be any repos with 8 digit issues anyway
+    # Might be a problem for other sources, but that's not a me problem yet
     setlocal sw=8
     setlocal ts=8
+    # And disable list characters
     setlocal nolist
+
+    # Local keybinds
+    nnoremap <buffer> <F5> :call skye#ListIssues(g:SkyeActiveUrl, g:SkyeActiveFilter)<cr>
+enddef
+
+def skye#InitIssueBuffer()
+    nnoremap <buffer> <Plug>(SkyeBack) :if g:SkyeLastIssue != "-1" <bar> call skye#ShowIssue(g:SkyeLastIssue) <bar> else <bar> echo "Backstack empty" <bar> endif<CR>
+
+    nmap <buffer> <F5> :call skye#ShowIssue(g:SkyeActiveIssue)<cr>
+    nmap <buffer><silent> <BS> <Plug>(SkyeBack)
+    
+    if has("gui_running")
+        # Browser-style mapping for gVim (doesn't work with terminal vim
+        # because input processing).
+        nmap <buffer><silent> <M-Left> <Plug>(SkyeBack)
+    endif
 enddef
 # }}}
 

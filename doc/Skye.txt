@@ -40,6 +40,15 @@ As a side-note, only public repositories are supported at this time.
 
 The complete list is under |skye-adapters|
 
+Additional navigation advice~
+
+Skye doesn't handle markdown link following, because I already did it in another
+plugin: https://github.com/LunarWatcher/Pandora
+
+There may be other plugins that follow links as well (including your markdown
+renderer), and these are incredibly useful when following the absolute URLs
+included.
+
 ================================================================================
 2. Adapters                                                        *skye-adapters*
 
@@ -143,7 +152,9 @@ Command      | Arguments                                     | Description
 --------------------------------------------------------------------------------
 4.2. Keybinds                                                          *skye-maps*
 
+Normal mode~
+
 *<leader>sl*                Calls |SkyeList| with 0 arguments
-*<leader>fi*                Calls |SkyeShow| with 0 arguments
+*<C-G>*                     Calls |SkyeShow| with 0 arguments
 
 vim:ft=help:tw=80
