@@ -23,7 +23,7 @@ The current requirement of requiring Git in PATH may or may not make it harder t
 * [x] Show individual issues
 * [x] Reformat the list to be compact (don't include a summary at all, for clarity)
 * [x] More syntax highlighting on the list page
-* [ ] Filtering
+* [x] Filtering
 * [x] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
 * [ ] Dealing with paging served by the API
 * [ ] Display pull requests (... and comments, but exclude changes)
