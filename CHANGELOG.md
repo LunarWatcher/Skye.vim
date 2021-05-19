@@ -1,3 +1,10 @@
+## 19.05.2021
+* Add [Pandora](https://github.com/lunarwatcher/pandora) integration in the list buffer
+* Prepare pull request API
+* Set up commands for other issue states
+* Keybinds for refresh and tiny bits of navigation (there's a backstack of one issue - deeper levels aren't supported at this time)
+* Update the keys for showing an issue (`<leader>something I don't remember` -> `<CR>` and `<C-g>`)
+
 ## 18.05.2021
 * Outsource headers
 * setlocal on sw and ts instead of set (forcing other settings isn't the goal)
