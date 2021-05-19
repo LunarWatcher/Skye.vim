@@ -26,6 +26,7 @@ The current requirement of requiring Git in PATH may or may not make it harder t
 * [ ] Filtering
 * [x] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
 * [ ] Dealing with paging served by the API
+* [ ] Display pull requests (... and comments, but exclude changes)
 
 ## Future ideas:
 * Issue editing and posting (full integration instead of read-only - we have the tokens for it already)

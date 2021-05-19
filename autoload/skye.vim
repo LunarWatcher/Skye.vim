@@ -220,6 +220,9 @@ def skye#InitListBuffer()
 
     if exists('*pandora#InitMarkdown')
         # Enable direct URL opening integration with Pandora
+        # This only needs to be explicitly activated for the non-markdown
+        # buffer. The markdown buffer doesn't need it (covered by an autocmd
+        # in pandora already)
         call pandora#InitMarkdown()
     endif
 enddef
@@ -238,4 +241,3 @@ def skye#InitIssueBuffer()
     endif
 enddef
 # }}}
-

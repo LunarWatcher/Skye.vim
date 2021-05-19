@@ -104,4 +104,14 @@ std::string GitHubConnector::getIssueList(
     return ret;
 }
 
+std::string GitHubConnector::getPullList(const std::string &url, const std::string &token, const std::string &apiParameters) {
+    // TODO: implement me
+    return "No-op function";
+}
+
+std::string GitHubConnector::getPullComments(const std::string &url, const std::string &token, const std::string &pullID) {
+    // TODO: implement me
+    return "No-op function";
+}
+
 } // namespace skye
