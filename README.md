@@ -18,7 +18,15 @@ Issue creation and management may be implemented in the future, but the main goa
 
 The current requirement of requiring Git in PATH may or may not make it harder to use on Windows, which is yet another reason it may not work under Windows. If it fails and you'd like to see it work, submit a PR.
 
-## TODO before v1.0.0:
+## Installation
+
+When you've fulfilled the requirements, it should be relatively straight-forward to install. The exact method depends on your plugin manager, but with vim-plug:
+
+```vimscript
+Plug 'LunarWatcher/skye.vim', { 'do': 'mkdir -p build && cd build && cmake .. && make -j 8' }
+```
+
+# TODO before v1.0.0:
 * [x] Issue lists
 * [x] Show individual issues
 * [x] Reformat the list to be compact (don't include a summary at all, for clarity)
@@ -26,7 +34,7 @@ The current requirement of requiring Git in PATH may or may not make it harder t
 * [x] Filtering
 * [x] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
 * [ ] Dealing with paging served by the API
-* [ ] Display pull requests (... and comments, but exclude changes)
+* [ ] Display pull requests (... and comments, but exclude changes because arsed to render that in Vim)
 
 ## Future ideas:
 * Issue editing and posting (full integration instead of read-only - we have the tokens for it already)
