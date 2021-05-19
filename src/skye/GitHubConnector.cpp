@@ -93,7 +93,6 @@ std::string GitHubConnector::getIssueList(
             ret += "#" + number + "\t[" + state + "]\t" + title + " by " + user + " at " + url + "\n";
         }
     } else if (obj.is_object()) {
-        // TODO: Figure out quota management and backoffs. No storage in C++ means this has to be returned somehow
         if (remainingQuota == "0") {
             return "Out of quota.\n\nSee `:h skye-github` for more information on rate limiting and tokens";
         }

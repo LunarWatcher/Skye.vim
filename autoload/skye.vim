@@ -112,7 +112,9 @@ def skye#ManageScratchBuffer(switch: number)
 
 enddef
 
-def skye#ListIssues(url = g:SkyeIssueUrl, apiQuery: string = "?state=open")
+# apiQuery defaults to empty over ?state=open because state defaults to open
+# in the API itself
+def skye#ListIssues(url = g:SkyeIssueUrl, apiQuery: string = "")
     if type(url) != v:t_string
         echoerr "URL isn't a string; aborting function"
         return
@@ -122,8 +124,8 @@ def skye#ListIssues(url = g:SkyeIssueUrl, apiQuery: string = "?state=open")
     g:SkyeActiveUrl = url
     g:SkyeActiveFilter = apiQuery
 
-    # TODO: fix token portability. Early determining which token to use might
-    # be tricky
+    # This isn't portable if multiple services are added, but that's a problem
+    # for later:tm: Probably best to use a function
     var issues = libcall(binary, 'getIssues', SeparateStrings(url, g:SkyeGitHubAccessToken, apiQuery))
 
     # Load the scratch buffer
@@ -215,9 +217,15 @@ def skye#InitListBuffer()
 
     # Local keybinds
     nnoremap <buffer> <F5> :call skye#ListIssues(g:SkyeActiveUrl, g:SkyeActiveFilter)<cr>
+
+    if exists('*pandora#InitMarkdown')
+        # Enable direct URL opening integration with Pandora
+        call pandora#InitMarkdown()
+    endif
 enddef
 
 def skye#InitIssueBuffer()
+    # Keybinds
     nnoremap <buffer> <Plug>(SkyeBack) :if g:SkyeLastIssue != "-1" <bar> call skye#ShowIssue(g:SkyeLastIssue) <bar> else <bar> echo "Backstack empty" <bar> endif<CR>
 
     nmap <buffer> <F5> :call skye#ShowIssue(g:SkyeActiveIssue)<cr>

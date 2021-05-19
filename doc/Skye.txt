@@ -72,9 +72,6 @@ Generate it at: Developer settings -> Personal access tokens -> Generate new tok
 As far as I know, it shouldn't need any scopes, potentially unless you expect it
 to work with private repos.
 
-
-TODO: Figure out if this is the best (read: secure) way to go about it
-
 Then `let g:SkyeGitHubAccessToken = "your token here"` (see: |g:SkyeGitHubAccessToken|)
 Since this is a personal access token, it's VERY important that you do NOT
 accidentally include the declaration of said variable anywhere public. Sharing
