@@ -35,6 +35,7 @@ Plug 'LunarWatcher/skye.vim', { 'do': 'mkdir -p build && cd build && cmake .. &&
 * [x] Refreshing (keybind, may potentially just re-call SkyeList or SkyeShow)
 * [ ] Dealing with paging served by the API
 * [ ] Display pull requests (... and comments, but exclude changes because arsed to render that in Vim)
+* [ ] Rewrite API access to use multiprocess interop (`+clientserver`) over the garbage used here
 
 ## Future ideas:
 * Issue editing and posting (full integration instead of read-only - we have the tokens for it already)
