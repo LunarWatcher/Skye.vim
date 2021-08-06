@@ -49,6 +49,18 @@ There may be other plugins that follow links as well (including your markdown
 renderer), and these are incredibly useful when following the absolute URLs
 included.
 
+Alternatives~
+
+I've been able to find a single other competing plugin, made a good year before
+Skye. Actually searching for it is a royal pain in the ass, though. I've only
+managed to find it through a poorly (search-engine) optimized dev.to-article, by
+sheer luck.
+
+https://github.com/skanehira/gh.vim
+
+At the time of writing, it's more complete than Skye, and has support for a lot
+more features, including write operations on the GitHub API.
+
 ================================================================================
 2. Adapters                                                        *skye-adapters*
 
