@@ -6,6 +6,10 @@ See the documentation file for an extended intro, as well as the deets.
 
 Issue creation and management may be implemented in the future, but the main goal at the moment is just to list and display.
 
+## Current status
+
+Unmaintained; I have no practical reason for using this over just going to github
+
 ## Requirements:
 * C++20 compiler
 * CMake
